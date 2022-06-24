@@ -62,9 +62,11 @@ class _MyHomePageState extends State<MyHomePage> {
             TextDropdownFormField(
               options: ["Male", "Female"],
               decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  suffixIcon: Icon(Icons.arrow_drop_down),
-                  labelText: "Gender"),
+                border: OutlineInputBorder(),
+                suffixIcon: Icon(Icons.arrow_drop_down),
+                labelText: "Gender",
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+              ),
               dropdownHeight: 120,
             ),
             SizedBox(
@@ -75,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
               decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   suffixIcon: Icon(Icons.arrow_drop_down),
-                  labelText: "Access"),
+                  hintText: "Access"),
               onSaved: (dynamic str) {},
               onChanged: (dynamic str) {},
               validator: (dynamic str) {},

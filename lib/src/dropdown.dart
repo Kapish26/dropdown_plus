@@ -3,12 +3,15 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 class DropdownEditingController<T> extends ChangeNotifier {
   T? _value;
+
   DropdownEditingController({T? value}) : _value = value;
 
   T? get value => _value;
+
   set value(T? newValue) {
     if (_value == newValue) return;
     _value = newValue;
@@ -20,7 +23,7 @@ class DropdownEditingController<T> extends ChangeNotifier {
 }
 
 /// Create a dropdown form field
-class DropdownFormField<T> extends StatefulWidget {
+class DropdownFormField<T> extends StatefulHookWidget {
   final bool autoFocus;
 
   /// It will trigger on user search
@@ -74,6 +77,8 @@ class DropdownFormField<T> extends StatefulWidget {
   /// this functon triggers on click of emptyAction button
   final Future<void> Function()? onEmptyActionPressed;
 
+  final TextStyle? inputTextStyle;
+
   DropdownFormField({
     Key? key,
     required this.dropdownItemFn,
@@ -93,6 +98,7 @@ class DropdownFormField<T> extends StatefulWidget {
     this.emptyActionText = 'Create new',
     this.onEmptyActionPressed,
     this.selectedFn,
+    this.inputTextStyle,
   }) : super(key: key);
 
   @override
@@ -154,6 +160,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
   @override
   Widget build(BuildContext context) {
     // print("_overlayEntry : $_overlayEntry");
+    final _hideHintText = useState(false);
 
     _displayItem = widget.displayItemFn(_selectedItem);
 
@@ -173,6 +180,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
             });
           },
           onKeyEvent: (focusNode, event) {
+            _hideHintText.value = true;
             return _onKeyPressed(event);
           },
           child: FormField(
@@ -197,13 +205,15 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
                 isFocused: _isFocused,
                 child: this._overlayEntry != null
                     ? EditableText(
-                        style: TextStyle(fontSize: 16, color: Colors.black87),
+                        style: widget.inputTextStyle ??
+                            TextStyle(fontSize: 16, color: Colors.black87),
                         controller: _searchTextController,
                         cursorColor: Colors.black87,
                         focusNode: _searchFocusNode,
                         backgroundCursorColor: Colors.transparent,
                         onChanged: (str) {
                           if (_overlayEntry == null) {
+                            _hideHintText.value = true;
                             _addOverlay();
                           }
                           _onTextChanged(str);
@@ -424,7 +434,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
       widget.onChanged!(_selectedItem);
     }
 
-    setState(() {});
+    // setState(() {});
   }
 
   _clearValue() {
