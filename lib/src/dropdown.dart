@@ -1,9 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:flutter/foundation.dart';
 
 class DropdownEditingController<T> extends ChangeNotifier {
   T? _value;
@@ -173,7 +172,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
               _isFocused = focused;
             });
           },
-          onKey: (focusNode, event) {
+          onKeyEvent: (focusNode, event) {
             return _onKeyPressed(event);
           },
           child: FormField(
@@ -366,34 +365,39 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
     });
   }
 
-  _onKeyPressed(RawKeyEvent event) {
-    // print('_onKeyPressed : ${event.character}');
-    if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+  _onKeyPressed(KeyEvent event) {
+    //print('_onKeyPressed : ${event.character}');
+    if (event.logicalKey == LogicalKeyboardKey.enter) {
       if (_searchFocusNode.hasFocus) {
         _toggleOverlay();
       } else {
         _toggleOverlay();
       }
-      return false;
-    } else if (event.isKeyPressed(LogicalKeyboardKey.escape)) {
+      //return false;
+      return KeyEventResult.ignored;
+    } else if (event.logicalKey == LogicalKeyboardKey.escape) {
       _removeOverlay();
-      return true;
-    } else if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+      return KeyEventResult.handled;
+      //return true;
+    } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
       int v = _listItemFocusedPosition;
       v++;
       if (v >= _options!.length) v = 0;
       _listItemFocusedPosition = v;
       _listItemsValueNotifier.value = List<T>.from(_options ?? []);
-      return true;
-    } else if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
+      //return true;
+      return KeyEventResult.handled;
+    } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
       int v = _listItemFocusedPosition;
       v--;
       if (v < 0) v = _options!.length - 1;
       _listItemFocusedPosition = v;
       _listItemsValueNotifier.value = List<T>.from(_options ?? []);
-      return true;
+      //return true;
+      return KeyEventResult.handled;
     }
-    return false;
+    return KeyEventResult.ignored;
+    //return false;
   }
 
   _search(String str) async {
