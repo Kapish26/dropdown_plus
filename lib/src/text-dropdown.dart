@@ -40,7 +40,7 @@ class TextDropdownFormField extends StatelessWidget {
       dropdownHeight: dropdownHeight,
       displayItemFn: (dynamic str) => Text(
         str ?? '',
-        style: TextStyle(fontSize: 16),
+        style: inputTextStyle ?? TextStyle(fontSize: 16),
       ),
       findFn: findFn ?? (dynamic str) async => options,
       filterFn: filterFn ??
